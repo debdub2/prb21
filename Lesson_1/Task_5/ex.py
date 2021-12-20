@@ -9,9 +9,8 @@ def replacestrg(strg):
     return(strg)
     
 if __name__ == '__main__':
-    n=int(input())
-    t=int(input())
+    n, t = map(int, input().split())
     s=input()
-    for i in range(t-1):
+    for i in range(t):
         s=s.replace(s, replacestrg(s))
     print(s)
