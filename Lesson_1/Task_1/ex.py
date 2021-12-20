@@ -1,7 +1,7 @@
 import sys
 
-def main(input_string):
-    print(len(input_string))
+def main(strg):
+    print(len(strg))
 
 if __name__ == '__main__':
     input_string=input()
