@@ -1,10 +1,9 @@
 def main(strg):
-    x = true if strg == strg[::-1] else false
+    return(strg == strg[::-1])
 
 if __name__ == '__main__':
     input_string=input()
-    main(input_string)
-    if x == true:
+    if main(input_string) == 1:
       print('This is palindrome.')
     else:
       print('This is not palindrome.')
