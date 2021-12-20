@@ -1,4 +1,4 @@
-def main(strg):
+def checkstrg(strg):
     if strg == strg[::-1]:
        print('This is palindrome.')
     else:
@@ -6,4 +6,4 @@ def main(strg):
 
 if __name__ == '__main__':
     input_string=input()
-    main(input_string)
+    checkstrg(input_string)
