@@ -1,9 +1,9 @@
 def replacestrg(strg):
     x = 0
     while x < n-2:
-        if strg[x] == B and s[x+1] == G:
-            strg=strg.replace(s[x], 'B')
-            strg=strg.replace(s[x+1], 'G')
+        if strg[x] == 'B' and s[x+1] =='G':
+            strg=strg.replace(s[x], 'B', 1)
+            strg=strg.replace(s[x+1], 'G', 1)
             x +=1
         x += 1
     return(strg)
