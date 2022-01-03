@@ -16,15 +16,11 @@ def _openfile():
 
 
 def checkstr(_str):
+    def checkstr(_str):
     jj = True
-    if (_str.find('$GPGGA') != -1) and (_str.find('M') != -1) and (_str.find('*') != -1):
-        if _str.find('N') != -1 or _str.find('S') != -1:
-            if _str.find('E') != -1 or _str.find('W') != -1:
-                ii = True
-            else:
-                ii = False
-        else:
-            ii = False
+    if (_str.find('$GPGGA') != -1) and (_str.find('M') != -1) and (_str.find('*') != -1) \
+            and (_str.find('N') != -1 or _str.find('S') != -1) and (_str.find('E') != -1 or _str.find('W') != -1):
+        ii = True
     else:
         ii = False
     try:
