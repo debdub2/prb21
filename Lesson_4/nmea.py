@@ -35,6 +35,7 @@ def checkstr(_str):
         jj = False
     return(ii*jj)
 
+
 def countlat(str):
     _line = str.split(',')
     latdegr = float(_line[2][:2])
