@@ -6,7 +6,6 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   message_generation
   geometry_msgs
-  tutrtlesim
 )
 
 
@@ -14,7 +13,6 @@ generate_messages(
   DEPENDENCIES
   std_msgs
   geometry_msgs
-  tutrtlesim
 )
 
 
