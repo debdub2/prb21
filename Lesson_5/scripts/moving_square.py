@@ -45,7 +45,7 @@ def rotate(ang):
 
 def turt(linear_vel, angular_vel):
     rospy.init_node('turtle1', anonymous=True)
-    rate = rospy.Rate(0.5)
+    rate = rospy.Rate(10)
 
     while True:
         move(linear_vel)
