@@ -39,7 +39,7 @@ def rotate(ang):
         velocity_publisher.publish(vel_msg)
         t1 = rospy.Time.now().to_sec()
         current_distance = speed_ang * (t1 - t0)
-    vel_msg.linear.x = 0
+    vel_msg.angular.x = 0
     velocity_publisher.publish(vel_msg)
 
 
