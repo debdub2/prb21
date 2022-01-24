@@ -54,9 +54,8 @@ class Turtle:
             dTerm = self.DSTATE * (self.current_ang - old_angle)
             old_angle = self.current_ang
 
-            rospy.loginfo("Point angle:%s %s %s", self.angle_destination, self.current_ang, err)
-
             self.com_vel.angular.z = pTerm + iTerm - dTerm
+            
             self.velocity_pub.publish(self.com_vel)
             self.rate.sleep()
 
