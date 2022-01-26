@@ -12,7 +12,7 @@ class PID:
 
     def __init__(self):
         self.pidIState = 0
-        self.old_angle = 0
+        self.old_err = 0
 
     def count_err(self, angdest, currang):
         err = angdest - currang
@@ -26,8 +26,8 @@ class PID:
         pTerm = self.PSTATE * err
         self.pidIState += err
         iTerm = self.ISTATE * self.pidIState
-        dTerm = self.DSTATE * (currang - self.old_angle)
-        self.old_angle = currang
+        dTerm = self.DSTATE * (err - self.old_err)
+        self.old_err = err
         return pTerm + iTerm - dTerm
 
 
@@ -53,6 +53,13 @@ class Turtle(PID):
     def current_angle(self, data):
         self.current_ang = data.theta
 
+    def correct_dest(self, ang):
+        if ang > math.radians(180):
+            ang -= math.radians(360)
+        if ang < math.radians(-180):
+            ang += math.radians(360)
+        return ang
+
     def move_turtle(self):
         time = rospy.get_rostime()
         while not rospy.is_shutdown():
@@ -60,10 +67,8 @@ class Turtle(PID):
             if rospy.get_rostime() > time + self.MOVING_TIME:
                 time = rospy.get_rostime()
                 self.angle_destination = self.angle_destination + self.TURN_ANGLE
-                if self.angle_destination > math.radians(180):
-                    self.angle_destination -= math.radians(360)
-                if self.angle_destination < math.radians(-180):
-                    self.angle_destination += math.radians(360)
+                self.angle_destination = self.correct_dest(self.angle_destination)
+                
 
             self.com_vel.angular.z = self.count_angular(self.count_err(self.angle_destination,
                                                                        self.current_ang), self.current_ang)
