@@ -5,14 +5,38 @@ from turtlesim.msg import Pose
 import math
 
 
-class Turtle:
+class PID:
     PSTATE = 10
     ISTATE = 0.01
     DSTATE = 0
+
+    def __init__(self):
+        self.pidIState = 0
+        self.old_angle = 0
+
+    def count_err(self, angdest, currang):
+        err = angdest - currang
+        if err > math.radians(180):
+            err -= math.radians(360)
+        if err < math.radians(-180):
+            err += math.radians(360)
+        return err
+
+    def count_angular(self, err, currang):
+        pTerm = self.PSTATE * err
+        self.pidIState += err
+        iTerm = self.ISTATE * self.pidIState
+        dTerm = self.DSTATE * (currang - self.old_angle)
+        self.old_angle = currang
+        return pTerm + iTerm - dTerm
+
+
+class Turtle(PID):
     TURN_ANGLE = math.radians(90)
     MOVING_TIME = rospy.Duration(3)
 
-    def __init__(self):
+    def __init__(self, x):
+        PID.__init__(self)
         rospy.init_node('turtle_controller', anonymous=True)
         self.vel_pub_topic = '/turtle1/cmd_vel'
         self.velocity_pub = rospy.Publisher(self.vel_pub_topic, Twist, queue_size=10)
@@ -22,7 +46,7 @@ class Turtle:
         self.com_vel = Twist()
         self.current_pose = Pose()
         self.current_ang = self.current_pose.theta
-        self.com_vel.linear.x = 1
+        self.com_vel.linear.x = x
         self.angle_destination = 0
         self.rate = rospy.Rate(10)
 
@@ -30,10 +54,9 @@ class Turtle:
         self.current_ang = data.theta
 
     def move_turtle(self):
-        pidIState = 0
-        old_angle = 0
         time = rospy.get_rostime()
         while not rospy.is_shutdown():
+
             if rospy.get_rostime() > time + self.MOVING_TIME:
                 time = rospy.get_rostime()
                 self.angle_destination = self.angle_destination + self.TURN_ANGLE
@@ -42,27 +65,16 @@ class Turtle:
                 if self.angle_destination < math.radians(-180):
                     self.angle_destination += math.radians(360)
 
-            err = self.angle_destination - self.current_ang
-            if err > math.radians(180):
-                err -= math.radians(360)
-            if err < math.radians(-180):
-                err += math.radians(360)
+            self.com_vel.angular.z = self.count_angular(self.count_err(self.angle_destination,
+                                                                       self.current_ang), self.current_ang)
 
-            pTerm = self.PSTATE * err
-            pidIState += err
-            iTerm = self.ISTATE * pidIState
-            dTerm = self.DSTATE * (self.current_ang - old_angle)
-            old_angle = self.current_ang
-
-            self.com_vel.angular.z = pTerm + iTerm - dTerm
-            
             self.velocity_pub.publish(self.com_vel)
             self.rate.sleep()
 
 
 if __name__ == '__main__':
     try:
-        a = Turtle()
+        a = Turtle(1)
         a.move_turtle()
     except rospy.ROSInterruptException:
         pass
